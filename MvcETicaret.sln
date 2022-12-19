@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33027.164
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcETicaret", "MvcETicaret\MvcETicaret.csproj", "{2EA5D386-F510-4ACC-B184-2A203A0849FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2EA5D386-F510-4ACC-B184-2A203A0849FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EA5D386-F510-4ACC-B184-2A203A0849FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EA5D386-F510-4ACC-B184-2A203A0849FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EA5D386-F510-4ACC-B184-2A203A0849FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B7337650-F10F-437D-A233-52107927CAF1}
+	EndGlobalSection
+EndGlobal
