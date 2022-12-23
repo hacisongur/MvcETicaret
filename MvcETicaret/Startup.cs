@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MvcETicaret.Data;
+using MvcETicaret.Email;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,9 +34,27 @@ namespace MvcETicaret
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddIdentity<IdentityUser,IdentityRole>().AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddRazorPages();
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
+            services.AddAuthentication().AddFacebook(options =>
+            {
+                options.AppId = "874787553952230";
+                options.AppSecret = "278de6d1a735ed2eff4e825701c40dee";
+            });
+            services.AddAuthentication().AddGoogle(options =>
+            {
+                options.ClientId= "872281535565-jtbig5d6b76lsbpka0d7fsshs7v404tp.apps.googleusercontent.com";
+                options.ClientSecret = "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";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
