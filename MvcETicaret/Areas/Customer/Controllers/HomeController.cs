@@ -27,7 +27,16 @@ namespace MvcETicaret.Areas.Customer.Controllers
             var products = _db.Products.Where(i=>i.IsHome).ToList();
             return View(products);
         }
-
+        public IActionResult Details(int id)
+        {
+            var product = _db.Products.FirstOrDefault(i => i.Id == id);
+            ShoppingCart cart = new ShoppingCart()
+            {
+                Product = product,
+                ProductId = product.Id
+            };
+            return View(cart);
+        }
         public IActionResult Privacy()
         {
             return View();
