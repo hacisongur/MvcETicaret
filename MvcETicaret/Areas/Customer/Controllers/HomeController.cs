@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MvcETicaret.Data;
 using MvcETicaret.Models;
@@ -6,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MvcETicaret.Areas.Customer.Controllers
@@ -25,6 +28,13 @@ namespace MvcETicaret.Areas.Customer.Controllers
         public IActionResult Index()
         {
             var products = _db.Products.Where(i=>i.IsHome).ToList();
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            if(claim!=null)
+            {
+                var count = _db.ShoppingCarts.Where(i => i.ApplicationUserId == claim.Value).ToList().Count();
+                HttpContext.Session.SetInt32(Diger.ssShoppingCart, count);
+            }
             return View(products);
         }
         public IActionResult Details(int id)
@@ -36,6 +46,47 @@ namespace MvcETicaret.Areas.Customer.Controllers
                 ProductId = product.Id
             };
             return View(cart);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public IActionResult Details(ShoppingCart Scart)
+        {
+            Scart.Id = 0;
+            if(ModelState.IsValid)
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                Scart.ApplicationUserId = claim.Value;
+                ShoppingCart cart = _db.ShoppingCarts.FirstOrDefault
+                    (
+                    u=>u.ApplicationUserId==Scart.ApplicationUserId && u.ProductId==Scart.ProductId);
+                if(cart==null)
+                {
+                    _db.ShoppingCarts.Add(Scart);
+                }
+                else
+                {
+                    cart.Count += Scart.Count;
+                }
+                _db.SaveChanges();
+                var count = _db.ShoppingCarts.Where(i => i.ApplicationUserId == Scart.ApplicationUserId).ToList().Count();
+                HttpContext.Session.SetInt32(Diger.ssShoppingCart,count);
+                return RedirectToAction(nameof(Index));
+
+            }
+            else
+            {
+                var product = _db.Products.FirstOrDefault(i => i.Id == Scart.Id);
+                ShoppingCart cart = new ShoppingCart()
+                {
+                    Product = product,
+                    ProductId = product.Id
+                };
+
+            }
+            
+            return View(Scart);
         }
         public IActionResult Privacy()
         {

@@ -56,6 +56,12 @@ namespace MvcETicaret
                 options.ClientId= "872281535565-jtbig5d6b76lsbpka0d7fsshs7v404tp.apps.googleusercontent.com";
                 options.ClientSecret = "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";
             });
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,7 +82,7 @@ namespace MvcETicaret
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
 

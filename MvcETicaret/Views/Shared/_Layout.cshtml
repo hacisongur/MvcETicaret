@@ -1,4 +1,6 @@
 ﻿@using MvcETicaret.Models
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,7 +45,28 @@
                                     </ul>
                                 </li>
                             }
+                            @if (User.Identity.IsAuthenticated && HttpContextAccessor.HttpContext.Session.GetInt32(Diger.ssShoppingCart) != null)
+                            {
+                                <li style="color:white">
+                                    <a asp-area="Customer" asp-controller="Cart" asp-action="Index" class="nav-link text-white">
+                                        @{
+                                            var count = HttpContextAccessor.HttpContext.Session.GetInt32(Diger.ssShoppingCart);
+                                        }
+                                        <i class="bi bi-cart2"></i>(@count)
+                                    </a>
+                                </li>
+                                   else
+                                   {
+                                    <li style="color:white">
+                                    <a href="/Identity/Account/Login" class="nav-link text-white">
+                                                                         
+                                        <i class="bi bi-cart2"></i>(0)
+                                    </a>
+                                </li>
 
+                            }
+
+                        }
                         </ul>
                         <partial name="_LoginPartial" />
                     </div>
